@@ -32,7 +32,7 @@ class HubertFeatureReader(object):
             cfg,
             task,
         ) = fairseq.checkpoint_utils.load_model_ensemble_and_task([ckpt_path])
-        self.model = model[0].eval().to(torch.device("mps"))
+        self.model = model[0].eval()
         self.task = task
         self.layer = layer
         self.max_chunk = max_chunk
@@ -51,7 +51,7 @@ class HubertFeatureReader(object):
     def get_feats(self, path, ref_len=None):
         x = self.read_audio(path, ref_len=ref_len)
         with torch.no_grad():
-            x = torch.from_numpy(x).float().to(torch.device("mps"))
+            x = torch.from_numpy(x).float()
             if self.task.cfg.normalize:
                 x = F.layer_norm(x, x.shape)
             x = x.view(1, -1)
